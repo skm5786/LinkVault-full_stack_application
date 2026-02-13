@@ -1,6 +1,6 @@
-const User = require('..backend/models/User');
-const { generateToken } = require('..backend/utils/tokenHelper');
-const config = require('..backend/config/config');
+const User = require('../models/User');
+const { generateToken } = require('../utils/tokenHelper');
+const config = require('../config/config');
 
 // Register new user
 async function register(req, res, next) {

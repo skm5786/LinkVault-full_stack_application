@@ -1,7 +1,7 @@
-const { db, db_helpers } = require('..backend/models/database');
-const { generateLinkId } = require('..backend/utils/linkGenerator');
-const { calculateExpiryDate, isExpired } = require('..backend/utils/dateHelpers');
-const { hashPassword, verifyPassword } = require('..backend/utils/passwordHelper');
+const { db, db_helpers } = require('../models/database');
+const { generateLinkId } = require('../utils/linkGenerator');
+const { calculateExpiryDate, isExpired } = require('../utils/dateHelpers');
+const { hashPassword, verifyPassword } = require('../utils/passwordHelper');
 const config = require('../config/config');
 const fs = require('fs').promises;
 

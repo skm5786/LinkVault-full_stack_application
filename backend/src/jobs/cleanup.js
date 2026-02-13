@@ -45,11 +45,10 @@ function startCleanupJob() {
           // Delete file if it exists
           if (item.file_path) {
             try {
-              await fs.access(item.file_path); // Check if file exists
+              await fs.access(item.file_path);
               await fs.unlink(item.file_path);
               console.log(`[Cleanup] Deleted file: ${item.file_path}`);
             } catch (fileErr) {
-              // File might already be deleted
               console.log(`[Cleanup] File not found or already deleted: ${item.file_path}`);
             }
           }

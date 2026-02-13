@@ -1,5 +1,5 @@
-const { verifyToken } = require('..backend/utils/tokenHelper');
-const User = require('..backend/models/User');
+const { verifyToken } = require('../utils/tokenHelper');
+const User = require('../models/User');
 
 async function authenticateToken(req, res, next) {
   try {
