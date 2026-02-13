@@ -33,10 +33,16 @@ const upload = multer({
   fileFilter: fileFilter
 });
 
-// Routes
-router.post('/upload', optionalAuth, upload.single('file'), validateUpload, uploadContent);
+// Upload routes
+router.post('/upload/text', optionalAuth, validateUpload, uploadContent);
+router.post('/upload/file', optionalAuth, upload.single('file'), validateUpload, uploadContent);
+router.post('/upload', optionalAuth, upload.single('file'), validateUpload, uploadContent); // Legacy support
+
+// Content access routes
 router.post('/content/:linkId', getContent); // POST to allow password in body
 router.get('/download/:linkId', downloadFile);
-router.delete('/content/:linkId', authenticateToken, deleteContent); // Requires auth
+
+// Content management routes (requires authentication)
+router.delete('/content/:linkId', authenticateToken, deleteContent);
 
 module.exports = router;
