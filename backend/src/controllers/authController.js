@@ -10,15 +10,18 @@ async function register(req, res, next) {
     // Validation
     if (!username || !email || !password) {
       return res.status(400).json({
+        success: false,
         error: 'Missing fields',
         message: 'Username, email, and password are required'
       });
     }
 
-    // Username validation
-    if (username.length < config.MIN_USERNAME_LENGTH || 
-        username.length > config.MAX_USERNAME_LENGTH) {
+    // Username validation - trim whitespace first
+    const trimmedUsername = username.trim();
+    if (trimmedUsername.length < config.MIN_USERNAME_LENGTH || 
+        trimmedUsername.length > config.MAX_USERNAME_LENGTH) {
       return res.status(400).json({
+        success: false,
         error: 'Invalid username',
         message: `Username must be between ${config.MIN_USERNAME_LENGTH} and ${config.MAX_USERNAME_LENGTH} characters`
       });
@@ -27,6 +30,7 @@ async function register(req, res, next) {
     // Password validation
     if (password.length < config.MIN_PASSWORD_LENGTH) {
       return res.status(400).json({
+        success: false,
         error: 'Weak password',
         message: `Password must be at least ${config.MIN_PASSWORD_LENGTH} characters`
       });
@@ -34,36 +38,44 @@ async function register(req, res, next) {
 
     // Email validation (basic)
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    const trimmedEmail = email.trim();
+    if (!emailRegex.test(trimmedEmail)) {
       return res.status(400).json({
+        success: false,
         error: 'Invalid email',
         message: 'Please provide a valid email address'
       });
     }
 
     // Check if username exists
-    const existingUsername = await User.findByUsername(username);
+    const existingUsername = await User.findByUsername(trimmedUsername);
     if (existingUsername) {
       return res.status(409).json({
+        success: false,
         error: 'Username taken',
         message: 'This username is already registered'
       });
     }
 
     // Check if email exists
-    const existingEmail = await User.findByEmail(email);
+    const existingEmail = await User.findByEmail(trimmedEmail);
     if (existingEmail) {
       return res.status(409).json({
+        success: false,
         error: 'Email taken',
         message: 'This email is already registered'
       });
     }
 
     // Create user
-    const userId = await User.create({ username, email, password });
+    const userId = await User.create({ 
+      username: trimmedUsername, 
+      email: trimmedEmail, 
+      password 
+    });
 
     // Generate token
-    const token = generateToken({ userId, username });
+    const token = generateToken({ userId, username: trimmedUsername });
 
     res.status(201).json({
       success: true,
@@ -72,12 +84,13 @@ async function register(req, res, next) {
         token,
         user: {
           id: userId,
-          username,
-          email
+          username: trimmedUsername,
+          email: trimmedEmail
         }
       }
     });
   } catch (error) {
+    console.error('Registration error:', error);
     next(error);
   }
 }
@@ -89,16 +102,19 @@ async function login(req, res, next) {
 
     if (!username || !password) {
       return res.status(400).json({
+        success: false,
         error: 'Missing credentials',
         message: 'Username and password are required'
       });
     }
 
-    // Find user
-    const user = await User.findByUsername(username);
+    // Find user - trim username
+    const trimmedUsername = username.trim();
+    const user = await User.findByUsername(trimmedUsername);
     
     if (!user) {
       return res.status(401).json({
+        success: false,
         error: 'Invalid credentials',
         message: 'Username or password is incorrect'
       });
@@ -109,6 +125,7 @@ async function login(req, res, next) {
     
     if (!isValidPassword) {
       return res.status(401).json({
+        success: false,
         error: 'Invalid credentials',
         message: 'Username or password is incorrect'
       });
@@ -133,6 +150,7 @@ async function login(req, res, next) {
       }
     });
   } catch (error) {
+    console.error('Login error:', error);
     next(error);
   }
 }
@@ -144,6 +162,7 @@ async function getCurrentUser(req, res, next) {
     
     if (!user) {
       return res.status(404).json({
+        success: false,
         error: 'User not found'
       });
     }
