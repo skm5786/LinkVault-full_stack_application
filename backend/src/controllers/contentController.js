@@ -5,24 +5,22 @@ const { hashPassword, verifyPassword } = require('../utils/passwordHelper');
 const config = require('../config/config');
 const fs = require('fs').promises;
 
-/**
- * Upload content with ALL bonus features
- */
+
 async function uploadContent(req, res, next) {
   try {
     const {
       content_type,
       text_content,
       expiry_minutes,
-      password,           // BONUS: Password protection
-      is_one_time,        // BONUS: One-time view
-      max_views           // BONUS: View limit
+      password,          
+      is_one_time,        
+      max_views          
     } = req.body;
 
     const linkId = generateLinkId();
-    const userId = req.user ? req.user.id : null; // Optional auth
+    const userId = req.user ? req.user.id : null;
 
-    // Calculate expiry
+    // calculate expiration time for link
     const expiryMinutes = expiry_minutes 
       ? parseFloat(expiry_minutes) 
       : config.DEFAULT_EXPIRY_MINUTES;
@@ -90,7 +88,7 @@ async function uploadContent(req, res, next) {
       }
     });
   } catch (error) {
-    // Clean up uploaded file on error
+    // cleanup code
     if (req.file) {
       try {
         await fs.unlink(req.file.path);
@@ -102,9 +100,6 @@ async function uploadContent(req, res, next) {
   }
 }
 
-/**
- * Get content with password and view limit checks
- */
 async function getContent(req, res, next) {
   try {
     const { linkId } = req.params;
@@ -173,7 +168,7 @@ async function getContent(req, res, next) {
     // Log access (for analytics)
     await logAccess(row.id, req);
 
-    // BONUS: One-time link - delete after viewing
+    // one time link check
     if (row.is_one_time) {
       await markAsDeleted(row.id, row.file_path);
     }
@@ -210,9 +205,7 @@ async function getContent(req, res, next) {
   }
 }
 
-/**
- * Download file with same checks as getContent
- */
+
 async function downloadFile(req, res, next) {
   try {
     const { linkId } = req.params;
@@ -281,15 +274,13 @@ async function downloadFile(req, res, next) {
   }
 }
 
-/**
- * BONUS: Manual delete (user must own the content)
- */
+// manual deletion of content
 async function deleteContent(req, res, next) {
   try {
     const { linkId } = req.params;
     const userId = req.user.id;
 
-    // Find content
+    // find content
     const sql = `
       SELECT * FROM content 
       WHERE link_id = ? AND user_id = ? AND is_deleted = 0
@@ -304,7 +295,6 @@ async function deleteContent(req, res, next) {
       });
     }
 
-    // Mark as deleted
     await markAsDeleted(row.id, row.file_path);
 
     res.json({

@@ -2,21 +2,20 @@ const User = require('../models/User');
 const { generateToken } = require('../utils/tokenHelper');
 const config = require('../config/config');
 
-// Register new user
+//regitstering new user
 async function register(req, res, next) {
   try {
     const { username, email, password } = req.body;
 
-    // Validation
+    // checking all fields present in register request
     if (!username || !email || !password) {
       return res.status(400).json({
         success: false,
         error: 'Missing fields',
-        message: 'Username, email, and password are required'
+        message: 'Username, email and password are required'
       });
     }
 
-    // Username validation - trim whitespace first
     const trimmedUsername = username.trim();
     if (trimmedUsername.length < config.MIN_USERNAME_LENGTH || 
         trimmedUsername.length > config.MAX_USERNAME_LENGTH) {
@@ -36,7 +35,7 @@ async function register(req, res, next) {
       });
     }
 
-    // Email validation (basic)
+    // regex for email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const trimmedEmail = email.trim();
     if (!emailRegex.test(trimmedEmail)) {
@@ -67,14 +66,14 @@ async function register(req, res, next) {
       });
     }
 
-    // Create user
+    // creating user
     const userId = await User.create({ 
       username: trimmedUsername, 
       email: trimmedEmail, 
       password 
     });
 
-    // Generate token
+    // generating token for user to store in database
     const token = generateToken({ userId, username: trimmedUsername });
 
     res.status(201).json({
@@ -95,7 +94,7 @@ async function register(req, res, next) {
   }
 }
 
-// Login user
+// login function args: username, password
 async function login(req, res, next) {
   try {
     const { username, password } = req.body;
@@ -131,7 +130,6 @@ async function login(req, res, next) {
       });
     }
 
-    // Update last login
     await User.updateLastLogin(user.id);
 
     // Generate token
@@ -155,7 +153,6 @@ async function login(req, res, next) {
   }
 }
 
-// Get current user
 async function getCurrentUser(req, res, next) {
   try {
     const user = await User.findById(req.user.id);
@@ -182,7 +179,7 @@ async function getCurrentUser(req, res, next) {
   }
 }
 
-// Logout (client-side token removal, optional endpoint)
+// logout function
 function logout(req, res) {
   res.json({
     success: true,

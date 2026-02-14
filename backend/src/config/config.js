@@ -9,12 +9,12 @@ module.exports = {
   CORS_ORIGIN: process.env.CORS_ORIGIN || 'http://localhost:5173',
   
   // JWT Authentication
-  JWT_SECRET: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
-  JWT_EXPIRES_IN: '7d', // 7 days
+  JWT_SECRET: process.env.JWT_SECRET,
+  JWT_EXPIRES_IN: '7d', 
   
   // Session
-  SESSION_SECRET: process.env.SESSION_SECRET || 'your-session-secret-change-in-production',
-  SESSION_MAX_AGE: 7 * 24 * 60 * 60 * 1000, // 7 days
+  SESSION_SECRET: process.env.SESSION_SECRET ,
+  SESSION_MAX_AGE: 7 * 24 * 60 * 60 * 1000,
   
   // File uploads
   MAX_FILE_SIZE: 50 * 1024 * 1024, // 50MB
@@ -41,17 +41,12 @@ module.exports = {
     // Code
     'application/json', 'application/xml',
   ],
-  
-  // Blocked file extensions (security)
   BLOCKED_EXTENSIONS: ['.exe', '.bat', '.cmd', '.com', '.pif', '.scr', '.vbs', '.js'],
-  
-  // Content settings
   DEFAULT_EXPIRY_MINUTES: 10,
   MAX_EXPIRY_DAYS: 36500,
   MIN_EXPIRY_MINUTES: 0.1,
   
-  // Cleanup job
-  CLEANUP_CRON_SCHEDULE: '*/5 * * * *', // Every 5 minutes
+  CLEANUP_CRON_SCHEDULE: '*/5 * * * *',
   
   // Password requirements
   MIN_PASSWORD_LENGTH: 8,
