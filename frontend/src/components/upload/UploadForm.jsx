@@ -37,7 +37,7 @@ const UploadForm = ({ onUploadSuccess }) => {
     try {
       let result;
       const options = {
-        expiry_minutes: expiryMinutes ? parseInt(expiryMinutes) : null,
+        expiry_minutes: expiryMinutes ? parseFloat(expiryMinutes) : null,
         password: password || null,
         is_one_time: isOneTime,
         max_views: maxViews ? parseInt(maxViews) : null
@@ -184,11 +184,13 @@ const UploadForm = ({ onUploadSuccess }) => {
             disabled={loading}
           >
             <option value="10">10 minutes</option>
+            <option value="0.75">45 seconds</option>
             <option value="30">30 minutes</option>
             <option value="60">1 hour</option>
             <option value="360">6 hours</option>
             <option value="1440">24 hours</option>
             <option value="10080">7 days</option>
+            <option value="52560000">permanent</option>
           </select>
         </div>
 

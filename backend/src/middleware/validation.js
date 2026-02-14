@@ -40,7 +40,7 @@ function validateUpload(req, res, next) {
 
   // Validate expiry
   if (expiry_minutes !== undefined && expiry_minutes !== null && expiry_minutes !== '') {
-    const minutes = parseInt(expiry_minutes);
+    const minutes = parseFloat(expiry_minutes);
     if (isNaN(minutes) || minutes < config.MIN_EXPIRY_MINUTES) {
       return res.status(400).json({
         error: 'Invalid expiry_minutes',

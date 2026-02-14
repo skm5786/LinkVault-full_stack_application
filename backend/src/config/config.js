@@ -2,7 +2,7 @@ require('dotenv').config();
 
 module.exports = {
   // Server
-  PORT: process.env.PORT || 5000,
+  PORT: process.env.PORT || 5001,
   NODE_ENV: process.env.NODE_ENV || 'development',
   
   // CORS
@@ -47,8 +47,8 @@ module.exports = {
   
   // Content settings
   DEFAULT_EXPIRY_MINUTES: 10,
-  MAX_EXPIRY_DAYS: 30,
-  MIN_EXPIRY_MINUTES: 1,
+  MAX_EXPIRY_DAYS: 36500,
+  MIN_EXPIRY_MINUTES: 0.1,
   
   // Cleanup job
   CLEANUP_CRON_SCHEDULE: '*/5 * * * *', // Every 5 minutes

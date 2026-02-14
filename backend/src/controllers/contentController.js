@@ -24,7 +24,7 @@ async function uploadContent(req, res, next) {
 
     // Calculate expiry
     const expiryMinutes = expiry_minutes 
-      ? parseInt(expiry_minutes) 
+      ? parseFloat(expiry_minutes) 
       : config.DEFAULT_EXPIRY_MINUTES;
     const expiryDate = calculateExpiryDate(expiryMinutes);
 
@@ -73,7 +73,7 @@ async function uploadContent(req, res, next) {
     ]);
 
     // Build share URL
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    const baseUrl = process.env.CLIENT_URL || 'http://localhost:5173'; 
     const shareUrl = `${baseUrl}/view/${linkId}`;
 
     res.status(201).json({

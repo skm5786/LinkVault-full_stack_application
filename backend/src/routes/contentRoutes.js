@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const { validateUpload } = require('../middleware/validation');
 const fileFilter = require('../middleware/fileFilter');
 const { optionalAuth, authenticateToken } = require('../middleware/auth');
@@ -34,9 +35,9 @@ const upload = multer({
 });
 
 // Upload routes
-router.post('/upload/text', optionalAuth, validateUpload, uploadContent);
+router.post('/upload/text', optionalAuth, upload.none(), validateUpload, uploadContent);
 router.post('/upload/file', optionalAuth, upload.single('file'), validateUpload, uploadContent);
-router.post('/upload', optionalAuth, upload.single('file'), validateUpload, uploadContent); // Legacy support
+router.post('/upload', optionalAuth, upload.single('file'), validateUpload, uploadContent);
 
 // Content access routes
 router.post('/content/:linkId', getContent); // POST to allow password in body

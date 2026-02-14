@@ -1,3 +1,4 @@
+const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -19,15 +20,34 @@ const { startCleanupJob } = require('./jobs/cleanup');
 
 const app = express();
 
+// --- FIX 1: Ensure Uploads Directory Exists (CRITICAL) ---
+// This prevents 500 errors when Multer tries to access the folder
+const uploadDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadDir)) {
+  try {
+    fs.mkdirSync(uploadDir, { recursive: true });
+    console.log(`✅ Created missing upload directory: ${uploadDir}`);
+  } catch (err) {
+    console.error(`❌ Failed to create upload directory: ${err.message}`);
+  }
+}
+
+// --- FIX 2: Request Logger (Helps Debugging) ---
+// Logs every request so you can see if it's a 404, 500, or CORS issue
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
+
 // Middleware
 app.use(cors({
-  origin: config.CORS_ORIGIN,
+  origin: config.CORS_ORIGIN || 'http://localhost:5173', // Fallback to Vite default
   credentials: true
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Trust proxy (for getting real IP addresses)
+// Trust proxy
 app.set('trust proxy', true);
 
 // Routes
@@ -39,15 +59,7 @@ app.use('/api/user', userRoutes);
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 
-    timestamp: new Date().toISOString(),
-    features: {
-      authentication: true,
-      password_protection: true,
-      one_time_links: true,
-      view_limits: true,
-      manual_delete: true,
-      background_cleanup: true
-    }
+    timestamp: new Date().toISOString() 
   });
 });
 
@@ -57,23 +69,17 @@ app.use(errorHandler);
 // Start cleanup job
 startCleanupJob();
 
-// Start server
-const server = app.listen(config.PORT, () => {
+// --- FIX 3: Explicit Port Logging ---
+const PORT = config.PORT || 5001; // Ensure 5001 is used if config is missing
+
+const server = app.listen(PORT, () => {
   console.log(`
 ╔═══════════════════════════════════════════════════════════╗
 ║                  LinkVault Server Started                 ║
 ╠═══════════════════════════════════════════════════════════╣
-║  Port:        ${config.PORT}                                       ║
-║  Environment: ${config.NODE_ENV}                          ║
-║  Features:    ALL (Core + Bonus)                          ║
-╠═══════════════════════════════════════════════════════════╣
-║  ✅ Authentication & User Accounts                        ║
-║  ✅ Password-Protected Links                              ║
-║  ✅ One-Time View Links                                   ║
-║  ✅ View/Download Limits                                  ║
-║  ✅ Manual Delete                                         ║
-║  ✅ Background Cleanup Job                                ║
-║  ✅ File Type Validation                                  ║
+║  Port:        ${PORT}                                       ║
+║  URL:         http://localhost:${PORT}                      ║
+║  Upload Dir:  ${uploadDir}                        ║
 ╚═══════════════════════════════════════════════════════════╝
   `);
 });
@@ -83,9 +89,7 @@ process.on('SIGINT', () => {
   console.log('\nShutting down gracefully...');
   server.close(() => {
     db.close((err) => {
-      if (err) {
-        console.error('Error closing database:', err);
-      }
+      if (err) console.error('Error closing database:', err);
       console.log('Server closed');
       process.exit(0);
     });
