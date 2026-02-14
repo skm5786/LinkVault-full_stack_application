@@ -1,8 +1,6 @@
 const { db_helpers } = require('../models/database');
 
-/**
- * Get user's upload history
- */
+// get user content will be required in other functions
 async function getUserContent(req, res, next) {
   try {
     const userId = req.user.id;
@@ -37,9 +35,6 @@ async function getUserContent(req, res, next) {
   }
 }
 
-/**
- * Get statistics for user
- */
 async function getUserStats(req, res, next) {
   try {
     const userId = req.user.id;
@@ -51,12 +46,12 @@ async function getUserStats(req, res, next) {
       total_views: 0
     };
 
-    // Total uploads
+    // total uploads calculation
     const totalSql = `SELECT COUNT(*) as count FROM content WHERE user_id = ?`;
     const totalResult = await db_helpers.get(totalSql, [userId]);
     stats.total_uploads = totalResult.count;
 
-    // Active uploads (not deleted, not expired)
+    // active uploads calculation(not expired or deleted)
     const activeSql = `
       SELECT COUNT(*) as count 
       FROM content 

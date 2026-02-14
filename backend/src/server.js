@@ -26,14 +26,12 @@ const uploadDir = path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadDir)) {
   try {
     fs.mkdirSync(uploadDir, { recursive: true });
-    console.log(`✅ Created missing upload directory: ${uploadDir}`);
+    console.log(`Created missing upload directory: ${uploadDir}`);
   } catch (err) {
-    console.error(`❌ Failed to create upload directory: ${err.message}`);
+    console.error(`Failed to create upload directory: ${err.message}`);
   }
 }
 
-// --- FIX 2: Request Logger (Helps Debugging) ---
-// Logs every request so you can see if it's a 404, 500, or CORS issue
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
@@ -41,13 +39,12 @@ app.use((req, res, next) => {
 
 // Middleware
 app.use(cors({
-  origin: config.CORS_ORIGIN || 'http://localhost:5173', // Fallback to Vite default
+  origin: config.CORS_ORIGIN || 'http://localhost:5173',
   credentials: true
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Trust proxy
 app.set('trust proxy', true);
 
 // Routes
@@ -69,7 +66,6 @@ app.use(errorHandler);
 // Start cleanup job
 startCleanupJob();
 
-// --- FIX 3: Explicit Port Logging ---
 const PORT = config.PORT || 5001; // Ensure 5001 is used if config is missing
 
 const server = app.listen(PORT, () => {
@@ -77,9 +73,10 @@ const server = app.listen(PORT, () => {
 ╔═══════════════════════════════════════════════════════════╗
 ║                  LinkVault Server Started                 ║
 ╠═══════════════════════════════════════════════════════════╣
-║  Port:        ${PORT}                                       ║
-║  URL:         http://localhost:${PORT}                      ║
-║  Upload Dir:  ${uploadDir}                        ║
+║  Port:        ${PORT}                                     ║
+║  URL:         http://localhost:${PORT}                    ║
+║  Upload Dir:  ${uploadDir} 
+║                              
 ╚═══════════════════════════════════════════════════════════╝
   `);
 });

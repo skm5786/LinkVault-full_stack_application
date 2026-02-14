@@ -1,27 +1,27 @@
-# 🔐 LinkVault - Secure File & Text Sharing
+#  LinkVault - Secure File & Text Sharing
 
 A full-stack web application for secure, temporary file and text sharing with advanced access controls.
 
-## 🌟 Features
+##  Features
 
 ### Core Features
-- ✅ Upload text or files (up to 50MB)
-- ✅ Generate unique, hard-to-guess URLs
-- ✅ Automatic content expiry (10 min to 30 days)
-- ✅ Link-based access control
-- ✅ Text viewing with copy-to-clipboard
-- ✅ File download functionality
+- Upload text or files (up to 50MB)
+- Generate unique, hard-to-guess URLs
+- Automatic content expiry (10 min to 30 days)
+- Link-based access control
+- Text viewing with copy-to-clipboard
+- File download functionality
 
-### 🎁 Bonus Features (ALL IMPLEMENTED)
-- ✅ **User Authentication** - JWT-based auth with registration/login
-- ✅ **Password-Protected Links** - Add password requirement to content
-- ✅ **One-Time View Links** - Content auto-deletes after first view
-- ✅ **Maximum View Limits** - Set view/download count limits
-- ✅ **Manual Delete** - Users can delete their content before expiry
-- ✅ **User Dashboard** - View upload history and statistics
-- ✅ **File Type Validation** - Security filters for dangerous files
-- ✅ **Background Cleanup Job** - Automatic deletion of expired content
-- ✅ **Access Logging** - Track views and downloads
+###  Bonus Features (ALL IMPLEMENTED)
+- **User Authentication** - JWT-based auth with registration/login
+- **Password-Protected Links** - Add password requirement to content
+- **One-Time View Links** - Content auto-deletes after first view
+- **Maximum View Limits** - Set view/download count limits
+- **Manual Delete** - Users can delete their content before expiry
+- **User Dashboard** - View upload history and statistics
+- **File Type Validation** - Security filters for dangerous files
+- **Background Cleanup Job** - Automatic deletion of expired content
+- **Access Logging** - Track views and downloads
 
 ## 🛠 Tech Stack
 
@@ -41,7 +41,7 @@ A full-stack web application for secure, temporary file and text sharing with ad
 - node-cron for cleanup jobs
 - Multer for file uploads
 
-## 📦 Installation & Setup
+## Installation & Setup
 
 ### Prerequisites
 - Node.js 18.x or higher
@@ -115,6 +115,6 @@ Frontend runs on `http://localhost:5173`
 - Delete content before expiry
 - Track view counts
 
-## 🏗 Architecture
+## Architecture
 
 ### High-Level Flow

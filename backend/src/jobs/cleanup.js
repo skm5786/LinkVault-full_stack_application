@@ -3,10 +3,7 @@ const { db_helpers } = require('../models/database');
 const fs = require('fs').promises;
 const config = require('../config/config');
 
-/**
- * Cleanup expired content
- * Runs on schedule defined in config
- */
+//Cleanup expired content
 function startCleanupJob() {
   console.log(`Starting cleanup job with schedule: ${config.CLEANUP_CRON_SCHEDULE}`);
   
@@ -62,7 +59,6 @@ function startCleanupJob() {
 
       console.log(`[Cleanup] Completed: ${deletedCount} deleted, ${failedCount} failed`);
 
-      // Optional: Clean up old access logs (keep last 30 days)
       await cleanupOldLogs();
 
     } catch (error) {
@@ -71,9 +67,6 @@ function startCleanupJob() {
   });
 }
 
-/**
- * Clean up old access logs to keep database size manageable
- */
 async function cleanupOldLogs() {
   try {
     const sql = `
@@ -91,9 +84,6 @@ async function cleanupOldLogs() {
   }
 }
 
-/**
- * Manual cleanup function (can be called via API endpoint if needed)
- */
 async function runManualCleanup() {
   console.log('[Cleanup] Running manual cleanup...');
   

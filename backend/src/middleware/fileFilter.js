@@ -1,9 +1,8 @@
 const path = require('path');
 const config = require('../config/config');
 
-/**
- * Multer file filter for security
- */
+// Multer file filter for security
+
 function fileFilter(req, file, cb) {
   // Check file extension
   const ext = path.extname(file.originalname).toLowerCase();
